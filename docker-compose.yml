@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: DockerfileFrontedRGL
+    container_name: frontendRGL
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - redwebRGL
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: DockerfileBackendRGL
+    container_name: backendRGL
+    command: bash -c "composer install && php -S 0.0.0.0:8000 -t public"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    networks:
+      - redwebRGL
+
+  web:
+    build:
+      context: ./web
+      dockerfile: DockerfileWebRGL
+    container_name: webRGL
+    ports:
+      - "80:80"
+    networks:
+      - redwebRGL
+
+networks:
+  redwebRGL:
+    driver: bridge
